@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "amount": 100.0,
+    "category": "food",
+    "description": "This is my food expenses",
+    "date": "2026-02-02 17:55:24"
+  }
+]
