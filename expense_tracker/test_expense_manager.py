@@ -148,3 +148,30 @@ class TestExpenseManager:
         expense = manager.add_expense(25.50, "food")
 
         assert expense["description"] == ""
+
+    def test_add_expense_negative_amount_raises(self, manager):
+        """Test that negative amounts raise ValueError."""
+        with pytest.raises(ValueError, match="cannot be negative"):
+            manager.add_expense(-10.00, "food", "Invalid")
+
+    def test_add_expense_empty_category_raises(self, manager):
+        """Test that empty category raises ValueError."""
+        with pytest.raises(ValueError, match="cannot be empty"):
+            manager.add_expense(25.50, "", "No category")
+
+    def test_add_expense_whitespace_category_raises(self, manager):
+        """Test that whitespace-only category raises ValueError."""
+        with pytest.raises(ValueError, match="cannot be empty"):
+            manager.add_expense(25.50, "   ", "Whitespace category")
+
+    def test_category_is_trimmed(self, manager):
+        """Test that category whitespace is trimmed."""
+        expense = manager.add_expense(25.50, "  food  ", "Lunch")
+        assert expense["category"] == "food"
+
+    def test_view_all_returns_copy(self, manager):
+        """Test that view_all_expenses returns a copy, not the original list."""
+        manager.add_expense(25.50, "food", "Lunch")
+        expenses = manager.view_all_expenses()
+        expenses.clear()
+        assert len(manager.view_all_expenses()) == 1

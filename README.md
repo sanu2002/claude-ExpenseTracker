@@ -12,14 +12,14 @@ A simple command-line application to track and manage your personal expenses.
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.6+ (3.8+ recommended for full typing support)
 - No external dependencies (uses only standard library)
 
 ## Installation
 
 ```bash
-git clone <repository-url>
-cd claude_code_Mastery/expense_tracker
+git clone https://github.com/sanu2002/claude-ExpenseTracker.git
+cd claude-ExpenseTracker/expense_tracker
 ```
 
 ## Usage
@@ -95,13 +95,14 @@ pip install pytest
 pytest -v
 ```
 
-The test suite includes 15 tests covering:
+The test suite includes 20 tests covering:
 - Adding single and multiple expenses
 - Viewing expenses
 - Calculating totals (overall and by category)
 - Category operations
 - Data persistence
-- Edge cases (empty data, corrupted files)
+- Input validation (negative amounts, empty categories)
+- Edge cases (empty data, corrupted files, defensive copying)
 
 ## Project Structure
 
@@ -118,15 +119,33 @@ expense_tracker/
 
 ## API Reference
 
+### Expense Type
+
+Each expense is a dictionary with the following structure:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | int | Unique identifier (auto-incremented) |
+| `amount` | float | Expense amount (must be non-negative) |
+| `category` | str | Category name (trimmed, non-empty) |
+| `description` | str | Optional description |
+| `date` | str | Timestamp in `YYYY-MM-DD HH:MM:SS` format |
+
 ### ExpenseManager Class
 
 | Method | Description |
 |--------|-------------|
-| `add_expense(amount, category, description)` | Add a new expense |
-| `view_all_expenses()` | Return list of all expenses |
-| `calculate_total()` | Calculate total spending |
-| `calculate_total_by_category(category)` | Calculate total for a category |
-| `get_categories()` | Get list of unique categories |
+| `add_expense(amount, category, description="")` | Add a new expense. Raises `ValueError` if amount is negative or category is empty. |
+| `view_all_expenses()` | Return a copy of all expenses list |
+| `calculate_total()` | Calculate total spending across all expenses |
+| `calculate_total_by_category(category)` | Calculate total for a category (case-insensitive) |
+| `get_categories()` | Get list of unique category names |
+
+### Input Validation
+
+The `add_expense` method validates input:
+- **Amount**: Must be >= 0 (raises `ValueError: Amount cannot be negative`)
+- **Category**: Must be non-empty after trimming (raises `ValueError: Category cannot be empty`)
 
 ## License
 
